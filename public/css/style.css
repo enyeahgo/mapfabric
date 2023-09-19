@@ -1,0 +1,12 @@
+body {
+  padding-top: 50px;
+  margin: 0 auto;
+  width: 80%;
+  background-color: lightgray;
+}
+
+@media all and (max-width: 480px) {
+  body {
+    width: 98%;
+  }
+}

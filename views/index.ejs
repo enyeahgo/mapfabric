@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <link rel="stylesheet" href="css/style.css">
+  <title><%= title %></title>
+</head>
+<body>
+  <div class="container-fluid">
+    <div class="row d-flex justify-content-center">
+      <div class="col-sm-6" style="background-color: aliceblue;">
+        <canvas id="c"></canvas>
+      </div>
+    </div>
+  </div>
+  <script src="js/fabric.js"></script>
+  <script>
+    (() => {
+      document.onreadystatechange = () => {
+        switch(document.readyState) {
+          case 'interactive':
+            console.log("Interactive");
+            break;
+          case 'complete':
+            console.log("Complete");
+            initFabric();
+            break;
+        }
+      }
+    })();
+
+    function initFabric() {
+      var canvas = this.__canvas = new fabric.Canvas('c');
+      // canvas.setBackgroundColor({ source: 'images/map.png', repeat: 'repeat' }, function () {
+      //   canvas.renderAll()
+      // })
+      canvas.setHeight(800);
+      canvas.setWidth(1250);
+      fabric.Image.fromURL('images/map.png', function(img, isError) {
+        img.set({width: canvas.width, height: canvas.height, originX: 'left', originY: 'top'});
+        canvas.setBackgroundImage(img, canvas.renderAll.bind(canvas));
+      });
+      fabric.Object.prototype.transparentCorners = false;
+
+      canvas.on('mouse:over', function(e) {
+        e.target.set('fill', 'red');
+        canvas.renderAll();
+      });
+
+      canvas.on('mouse:out', function(e) {
+        e.target.set('fill', 'green');
+        canvas.renderAll();
+      });
+
+      // add random objects
+      for (var i = 15; i--; ) {
+        var dim = fabric.util.getRandomInt(30, 60);
+        var klass = ['Rect', 'Triangle', 'Circle'][fabric.util.getRandomInt(0,2)];
+        var options = {
+          top: fabric.util.getRandomInt(0, 600),
+          left: fabric.util.getRandomInt(0, 600),
+          fill: 'green'
+        };
+        if (klass === 'Circle') {
+          options.radius = dim;
+        }
+        else {
+          options.width = dim;
+          options.height = dim;
+        }
+        canvas.add(new fabric[klass](options));
+      }
+    }
+  </script>
+</body>
+</html>
